@@ -1,53 +1,41 @@
 ---
 # Banner
 banner:
-  title: "The Ultimate Starter Template You Need To Start Your Astro Project"
-  content: "Astroplate is a free starter template built with Astro and TailwindCSS, providing everything you need to jumpstart your Astro project and save valuable time."
+  title: "The Band: where development teams orchestrate their own DevEx"
+  content: "The Band is a data-integration platform where development teams orchestrate their own Developer Experience (DevEx), using real data they generate to create harmony between productivity, collaboration, and innovation."
   image: "/images/banner.png"
   button:
     enable: true
-    label: "Get Started For Free"
-    link: "https://github.com/zeon-studio/astroplate"
+    label: "Elevate the team DevEx now!"
+    link: "https://github.com/orgs/The-Band-Solution/"
 
 # Features
 features:
-  - title: "What's Included in Astroplate"
+  - title: "What's Included in The Band"
     image: "/images/service-1.png"
-    content: "Astroplate is a comprehensive starter template that includes everything you need to get started with your Astro project. What's Included in Astroplate"
+    content: "Through the integration of data from different tools — such as GitHub, GitLab, SonarQube, Jira, and others — and by applying advanced techniques from Complex Networks and Psychology, The Band provides actionable insights to:"
     bulletpoints:
-      - "10+ Pre-build pages"
-      - "95+ Google Pagespeed Score"
-      - "Build with Astro and TailwindCSS for easy and customizable styling"
-      - "Fully responsive on all devices"
-      - "SEO-optimized for better search engine rankings"
-      - "**Open-source and free** for personal and commercial use"
+      - "**Understand team dynamics** and how collaboration patterns impact productivity."
+      - "**Analyze social and technical competencies** within the team to identify strengths, gaps, and opportunities for growth."
+      - "**Identify bottlenecks and risks** in development workflows before they escalate."
+      - "**Enhance Developer Experience (DevEx)** by aligning technical practices with human factors."
+      - "**Drive continuous improvement** with data-driven strategies tailored to each team’s reality."      
     button:
       enable: false
       label: "Get Started Now"
       link: "#"
 
-  - title: "Discover the Key Features Of Astro"
+  - title: "Discover the Key Features Of The Band"
     image: "/images/service-2.png"
-    content: "Astro is an all-in-one web framework for building fast, content-focused websites. It offers a range of exciting features for developers and website creators. Some of the key features are:"
+    content: "The Band brings harmony to your development workflow by turning scattered data into meaningful insights. Here’s how:"
     bulletpoints:
-      - "Zero JS, by default: No JavaScript runtime overhead to slow you down."
-      - "Customizable: Tailwind, MDX, and 100+ other integrations to choose from."
-      - "UI-agnostic: Supports React, Preact, Svelte, Vue, Solid, Lit and more."
+      - "Unified Data – Connect GitHub, GitLab, SonarQube, Jira, and more in one place."
+      - "Smart Insights – Reveal collaboration patterns, risks, and team dynamics with advanced network analysis"
+      - "Better DevEx – Enhance productivity and well-being through data-driven Developer Experience improvements."
+
     button:
       enable: true
       label: "Get Started Now"
-      link: "https://github.com/zeon-studio/astroplate"
+      link: "https://github.com/orgs/The-Band-Solution/"
 
-  - title: "The Top Reasons to Choose Astro for Your Next Project"
-    image: "/images/service-3.png"
-    content: "With Astro, you can build modern and content-focused websites without sacrificing performance or ease of use."
-    bulletpoints:
-      - "Instantly load static sites for better user experience and SEO."
-      - "Intuitive syntax and support for popular frameworks make learning and using Astro a breeze."
-      - "Use any front-end library or framework, or build custom components, for any project size."
-      - "Built on cutting-edge technology to keep your projects up-to-date with the latest web standards."
-    button:
-      enable: false
-      label: ""
-      link: ""
 ---
