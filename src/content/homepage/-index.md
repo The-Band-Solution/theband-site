@@ -23,7 +23,7 @@ features:
     button:
       enable: false
       label: "Get Started Now"
-      link: "#"
+      link: "https://github.com/orgs/The-Band-Solution/"
 
   - title: "Discover the Key Features Of The Band"
     image: "/images/service-2.png"
