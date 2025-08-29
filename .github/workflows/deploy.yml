@@ -1,20 +1,73 @@
-name: Deploy Astro site to GitHub Pages
+name: Deploy Astro to GitHub Pages (via Makefile)
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main"]  # ajuste se necessário
+
+permissions:
+  contents: write  # necessário para publicar no gh-pages
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ===== Node + cache dinâmico por gerenciador de pacotes =====
+      - name: Setup Node (npm)
+        if: hashFiles('**/package-lock.json', '**/npm-shrinkwrap.json') != ''
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
-      - run: npm run build
-      - uses: peaceiris/actions-gh-pages@v4
+          cache: npm
+
+      - name: Setup Node (yarn)
+        if: hashFiles('**/yarn.lock') != ''
+        uses: actions/setup-node@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          node-version: 20
+          cache: yarn
+
+      - name: Setup Node (pnpm)
+        if: hashFiles('**/pnpm-lock.yaml') != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # ===== Instalação de dependências conforme lock encontrado =====
+      - name: Enable Corepack (pnpm/yarn)
+        if: hashFiles('**/pnpm-lock.yaml', '**/yarn.lock') != ''
+        run: corepack enable
+
+      - name: Install deps (Yarn)
+        if: hashFiles('**/yarn.lock') != ''
+        run: yarn install --frozen-lockfile
+
+      - name: Install deps (PNPM)
+        if: hashFiles('**/pnpm-lock.yaml') != ''
+        run: pnpm install --frozen-lockfile
+
+      - name: Install deps (NPM - lock)
+        if: hashFiles('**/package-lock.json', '**/npm-shrinkwrap.json') != ''
+        run: npm ci
+
+      - name: Install deps (NPM - sem lock) # fallback
+        if: hashFiles('**/yarn.lock', '**/pnpm-lock.yaml', '**/package-lock.json', '**/npm-shrinkwrap.json') == ''
+        run: npm install
+
+      # ===== Build + Deploy via Makefile =====
+      - name: Build (Makefile)
+        run: make build
+
+      - name: Configurar autor do git (para gh-pages)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy (Makefile)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make deploy
