@@ -2,7 +2,7 @@ name: Deploy Astro to GitHub Pages (via Makefile)
 
 on:
   push:
-    branches: ["main"]  # ajuste se necessário
+    branches: ["main","gh-pages"]  # ajuste se necessário
 
 permissions:
   contents: write  # necessário para publicar no gh-pages
