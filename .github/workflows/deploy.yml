@@ -1,20 +1,34 @@
-name: Deploy Astro site to GitHub Pages
+name: Deploy Astro to GitHub Pages (via Makefile)
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main"]   # ajuste se seu branch principal for outro
+
+permissions:
+  contents: write  # necessário para push no branch gh-pages
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
-      - run: npm run build
-      - uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          cache: "npm"
+          
+      - name: Build (Makefile)
+        run: make build
+
+      - name: Configure git author (para o gh-pages)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy (Makefile)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make deploy
