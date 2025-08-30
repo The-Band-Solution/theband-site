@@ -12,7 +12,7 @@ import config from "./src/config/config.json";
 // https://astro.build/config
 export default defineConfig({
   site: config.site.base_url ? config.site.base_url : "https://the-band-solution.github.io/theband-site",
-  base: config.site.base_path ? config.site.base_path : "/",
+  base: config.site.base_path ? config.site.base_path : "/theband-site/",
   outDir: 'dist',
   trailingSlash: config.site.trailing_slash ? "always" : "never",
   image: { service: sharp() },

@@ -2,99 +2,63 @@ name: Deploy Astro to GitHub Pages
 
 on:
   push:
-    branches: ["main"]   # ajuste se seu branch principal for outro (ex: "master")
+    branches: ["main"]  # ajuste se usar outro branch
 
 permissions:
-  contents: write        # necessário para push no gh-pages
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Detecta gerenciador e configura cache
-      - name: Setup Node (npm)
-        if: hashFiles('**/package-lock.json', '**/npm-shrinkwrap.json') != ''
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
-      - name: Setup Node (yarn)
-        if: hashFiles('**/yarn.lock') != ''
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: yarn
-
-      - name: Setup Node (pnpm)
-        if: hashFiles('**/pnpm-lock.yaml') != ''
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-
-      - name: Enable Corepack (pnpm/yarn)
-        if: hashFiles('**/pnpm-lock.yaml', '**/yarn.lock') != ''
-        run: corepack enable
-
-      # Instala dependências conforme o lock encontrado (com fallback)
-      - name: Install deps (Yarn)
-        if: hashFiles('**/yarn.lock') != ''
-        run: yarn install --frozen-lockfile
-
-      - name: Install deps (PNPM)
-        if: hashFiles('**/pnpm-lock.yaml') != ''
-        run: pnpm install --frozen-lockfile
-
-      - name: Install deps (NPM - lock)
-        if: hashFiles('**/package-lock.json', '**/npm-shrinkwrap.json') != ''
-        run: npm ci
-
-      - name: Install deps (NPM - sem lock) # fallback
-        if: hashFiles('**/yarn.lock', '**/pnpm-lock.yaml', '**/package-lock.json', '**/npm-shrinkwrap.json') == ''
-        run: npm install
-
-      # Garante que o gh-pages CLI exista (independente do seu package.json)
-      - name: Ensure gh-pages CLI
+      # Instala dependências conforme o lock encontrado (npm/yarn/pnpm)
+      - name: Install dependencies
         run: |
-          if [ -f yarn.lock ]; then
-            yarn add -D gh-pages
+          if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
+            npm ci
+          elif [ -f yarn.lock ]; then
+            corepack enable
+            yarn install --frozen-lockfile
           elif [ -f pnpm-lock.yaml ]; then
-            pnpm add -D gh-pages
+            corepack enable
+            pnpm install --frozen-lockfile
           else
-            npm i -D gh-pages
+            npm install
           fi
 
-      # Build do Astro
-      - name: Build Astro
+      - name: Build site
         run: |
-          if [ -f yarn.lock ]; then
-            yarn run astro build
-          elif [ -f pnpm-lock.yaml ]; then
-            pnpm astro build
-          else
-            npx astro build
-          fi
+          npx astro build
 
-      # Configura autor para o commit no gh-pages
-      - name: Configure git author
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-      # Publica a pasta dist com token na URL
-      - name: Deploy to gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-        run: |
-          TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          npx gh-pages -d dist \
-            --branch gh-pages \
-            --dotfiles \
-            --message "deploy: $TS" \
-            --user "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" \
-            --repo "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git"
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
