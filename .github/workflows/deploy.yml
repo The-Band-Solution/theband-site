@@ -2,7 +2,7 @@ name: Deploy Astro to GitHub Pages
 
 on:
   push:
-    branches: ["main"]  # ajuste se usar outro branch
+    branches: ["main","gh-pages"]  # ajuste se usar outro branch
 
 permissions:
   contents: read
@@ -39,7 +39,6 @@ jobs:
           else
             npm install
           fi
-
       - name: Build site
         env:
           SITE_URL: https://the-band-solution.github.io/theband-site/
@@ -59,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://the-band-solution.github.io/theband-site/
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
