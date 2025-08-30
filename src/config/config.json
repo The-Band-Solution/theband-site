@@ -1,8 +1,8 @@
 {
   "site": {
     "title": "The Band",
-    "base_url": "https://astroplate.netlify.app",
-    "base_path": "/",
+    "base_url": "https://the-band-solution.github.io/theband-site/",
+    "base_path": "/theband-site/",
     "trailing_slash": false,
     "favicon": "/images/favicon.png",
     "logo": "/images/logo.png",
